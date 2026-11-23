@@ -6,6 +6,8 @@ All notable changes to this integration are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-11-23
+
 ### Added
 
 - First version of the Obihai OBi integration, built from the official Gladys

@@ -8,8 +8,8 @@
     "de": "Überwache deine Obihai-OBi-VoIP-Adapter: SIP-Leitungen, Telefonports, Anrufe und Neustart.",
     "es": "Siga sus adaptadores VoIP Obihai OBi: líneas SIP, puertos, llamadas entrantes y reinicio."
   },
-  "version": "0.1.0",
-  "docker_image": "ghcr.io/prohand/gladys-obihaiobi:0.1.0",
+  "version": "0.1.1",
+  "docker_image": "ghcr.io/prohand/gladys-obihaiobi:0.1.1",
   "gladys_version": ">=5.3.0",
   "cover_image": "https://raw.githubusercontent.com/prohand/gladys-obihaiobi/main/cover.png",
   "categories": ["network", "notifications"],

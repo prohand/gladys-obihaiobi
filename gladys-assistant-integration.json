@@ -1,0 +1,921 @@
+{
+  "manifest_version": 1,
+  "type": "device",
+  "name": "Obihai OBi",
+  "description": {
+    "en": "Follow your Obihai OBi VoIP adapters: SIP lines, phone ports, incoming calls and reboot.",
+    "fr": "Suivez vos adaptateurs VoIP Obihai OBi : lignes SIP, ports téléphone, appels et redémarrage.",
+    "de": "Überwache deine Obihai-OBi-VoIP-Adapter: SIP-Leitungen, Telefonports, Anrufe und Neustart.",
+    "es": "Siga sus adaptadores VoIP Obihai OBi: líneas SIP, puertos, llamadas entrantes y reinicio."
+  },
+  "version": "0.1.0",
+  "docker_image": "ghcr.io/prohand/gladys-obihaiobi:0.1.0",
+  "gladys_version": ">=5.3.0",
+  "cover_image": "https://raw.githubusercontent.com/prohand/gladys-obihaiobi/main/cover.png",
+  "categories": ["network", "notifications"],
+  "keywords": [
+    "obi200",
+    "obi202",
+    "obi110",
+    "obi302",
+    "obitalk",
+    "voip",
+    "sip",
+    "ata",
+    "telephone",
+    "poly"
+  ],
+  "countries": [
+    "FR",
+    "BE",
+    "CH",
+    "LU",
+    "DE",
+    "AT",
+    "ES",
+    "PT",
+    "IT",
+    "NL",
+    "GB",
+    "IE",
+    "US",
+    "CA",
+    "MX",
+    "AU",
+    "NZ"
+  ],
+  "transports": ["local"],
+  "config_schema": [
+    {
+      "key": "intro",
+      "type": "section",
+      "label": {
+        "en": "Getting started",
+        "fr": "Pour commencer",
+        "de": "Erste Schritte",
+        "es": "Primeros pasos"
+      },
+      "description": {
+        "en": "The integration reads the status pages of your OBi box on your local network, like its web interface does. No cloud and no OBiTALK account: enter the IP address of the box and the password of its web interface (admin account to allow reboots).",
+        "fr": "L'intégration lit les pages d'état de votre boîtier OBi sur votre réseau local, comme son interface web. Pas de cloud ni de compte OBiTALK : saisissez l'adresse IP du boîtier et le mot de passe de son interface web (compte admin pour autoriser le redémarrage).",
+        "de": "Die Integration liest die Statusseiten deiner OBi-Box in deinem lokalen Netzwerk, wie ihre Weboberfläche. Keine Cloud und kein OBiTALK-Konto: Gib die IP-Adresse der Box und das Passwort ihrer Weboberfläche ein (Admin-Konto, um Neustarts zu erlauben).",
+        "es": "La integración lee las páginas de estado de su equipo OBi en su red local, como su interfaz web. Sin nube ni cuenta OBiTALK: introduzca la dirección IP del equipo y la contraseña de su interfaz web (cuenta admin para permitir reinicios)."
+      },
+      "links": [
+        {
+          "url": "https://github.com/prohand/gladys-obihaiobi/blob/main/docs/en.md",
+          "label": {
+            "en": "Integration documentation",
+            "fr": "Documentation de l'intégration",
+            "de": "Dokumentation der Integration",
+            "es": "Documentación de la integración"
+          }
+        }
+      ]
+    },
+    {
+      "key": "hosts",
+      "type": "string",
+      "label": {
+        "en": "Address of the OBi box",
+        "fr": "Adresse du boîtier OBi",
+        "de": "Adresse der OBi-Box",
+        "es": "Dirección del equipo OBi"
+      },
+      "description": {
+        "en": "IP address or host name of the box on your network (dial ***1 on a phone plugged into it to hear it). Several boxes with the same password: separate them with commas.",
+        "fr": "Adresse IP ou nom du boîtier sur votre réseau (composez ***1 sur un téléphone branché dessus pour l'entendre). Plusieurs boîtiers avec le même mot de passe : séparez-les par des virgules.",
+        "de": "IP-Adresse oder Hostname der Box in deinem Netzwerk (wähle ***1 an einem angeschlossenen Telefon, um sie anzusagen). Mehrere Boxen mit demselben Passwort: durch Kommas trennen.",
+        "es": "Dirección IP o nombre del equipo en su red (marque ***1 en un teléfono conectado para oírla). Varios equipos con la misma contraseña: sepárelos con comas."
+      },
+      "placeholder": {
+        "en": "e.g. 192.168.1.50",
+        "fr": "ex. 192.168.1.50",
+        "de": "z. B. 192.168.1.50",
+        "es": "p. ej. 192.168.1.50"
+      },
+      "required": true
+    },
+    {
+      "key": "username",
+      "type": "select",
+      "label": {
+        "en": "Account",
+        "fr": "Compte",
+        "de": "Konto",
+        "es": "Cuenta"
+      },
+      "description": {
+        "en": "Account of the OBi web interface. admin can reboot the box; user can only read it.",
+        "fr": "Compte de l'interface web de l'OBi. admin peut redémarrer le boîtier ; user peut seulement le lire.",
+        "de": "Konto der OBi-Weboberfläche. admin kann die Box neu starten; user kann sie nur lesen.",
+        "es": "Cuenta de la interfaz web del OBi. admin puede reiniciar el equipo; user solo puede leerlo."
+      },
+      "required": false,
+      "default": "admin",
+      "options": [
+        {
+          "value": "admin",
+          "label": {
+            "en": "admin",
+            "fr": "admin",
+            "de": "admin",
+            "es": "admin"
+          }
+        },
+        {
+          "value": "user",
+          "label": {
+            "en": "user (read only)",
+            "fr": "user (lecture seule)",
+            "de": "user (nur lesen)",
+            "es": "user (solo lectura)"
+          }
+        }
+      ]
+    },
+    {
+      "key": "password",
+      "type": "secret",
+      "label": {
+        "en": "Password",
+        "fr": "Mot de passe",
+        "de": "Passwort",
+        "es": "Contraseña"
+      },
+      "description": {
+        "en": "Password of that account (admin by default on a new box: change it).",
+        "fr": "Mot de passe de ce compte (admin par défaut sur un boîtier neuf : changez-le).",
+        "de": "Passwort dieses Kontos (standardmäßig admin bei einer neuen Box: ändere es).",
+        "es": "Contraseña de esa cuenta (admin por defecto en un equipo nuevo: cámbiela)."
+      },
+      "required": true
+    },
+    {
+      "key": "poll_frequency",
+      "type": "number",
+      "label": {
+        "en": "Refresh interval (s)",
+        "fr": "Intervalle de rafraîchissement (s)",
+        "de": "Aktualisierungsintervall (s)",
+        "es": "Intervalo de actualización (s)"
+      },
+      "description": {
+        "en": "How often the boxes are read, in seconds. Keep it short (5 s) to catch incoming calls while the phone rings.",
+        "fr": "Fréquence de lecture des boîtiers, en secondes. Gardez-la courte (5 s) pour voir les appels entrants pendant que le téléphone sonne.",
+        "de": "Wie oft die Boxen gelesen werden, in Sekunden. Kurz halten (5 s), um eingehende Anrufe zu sehen, solange das Telefon klingelt.",
+        "es": "Frecuencia de lectura de los equipos, en segundos. Manténgala corta (5 s) para detectar las llamadas entrantes mientras suena el teléfono."
+      },
+      "required": false,
+      "default": 5,
+      "min": 2,
+      "max": 3600
+    }
+  ],
+  "actions": [
+    {
+      "key": "test_connection",
+      "label": {
+        "en": "Test the connection",
+        "fr": "Tester la connexion",
+        "de": "Verbindung testen",
+        "es": "Probar la conexión"
+      },
+      "timeout_seconds": 30
+    },
+    {
+      "key": "reboot",
+      "label": {
+        "en": "Reboot a box",
+        "fr": "Redémarrer un boîtier",
+        "de": "Eine Box neu starten",
+        "es": "Reiniciar un equipo"
+      },
+      "timeout_seconds": 15,
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "OBi box",
+            "fr": "Boîtier OBi",
+            "de": "OBi-Box",
+            "es": "Equipo OBi"
+          },
+          "required": true
+        }
+      ]
+    }
+  ],
+  "widgets": [
+    {
+      "key": "obi_status",
+      "label": {
+        "en": "OBi box",
+        "fr": "Boîtier OBi",
+        "de": "OBi-Box",
+        "es": "Equipo OBi"
+      },
+      "description": {
+        "en": "SIP lines, phone ports, uptime and a reboot button.",
+        "fr": "Lignes SIP, ports téléphone, durée de fonctionnement et redémarrage.",
+        "de": "SIP-Leitungen, Telefonports, Laufzeit und eine Neustart-Taste.",
+        "es": "Líneas SIP, puertos de teléfono, tiempo activo y botón de reinicio."
+      },
+      "icon": "phone",
+      "settings": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "OBi box",
+            "fr": "Boîtier OBi",
+            "de": "OBi-Box",
+            "es": "Equipo OBi"
+          },
+          "required": false,
+          "description": {
+            "en": "Box shown by this widget. Empty: the first one.",
+            "fr": "Boîtier affiché par ce widget. Vide : le premier.",
+            "de": "Von diesem Widget angezeigte Box. Leer: die erste.",
+            "es": "Equipo mostrado por este widget. Vacío: el primero."
+          }
+        }
+      ],
+      "action_timeout_seconds": 15
+    }
+  ],
+  "scene_triggers": [
+    {
+      "key": "incoming_call",
+      "label": {
+        "en": "Incoming call",
+        "fr": "Appel entrant",
+        "de": "Eingehender Anruf",
+        "es": "Llamada entrante"
+      },
+      "description": {
+        "en": "A phone plugged into the OBi box starts ringing.",
+        "fr": "Un téléphone branché sur le boîtier OBi se met à sonner.",
+        "de": "Ein an der OBi-Box angeschlossenes Telefon beginnt zu klingeln.",
+        "es": "Un teléfono conectado al equipo OBi empieza a sonar."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "OBi box",
+            "fr": "Boîtier OBi",
+            "de": "OBi-Box",
+            "es": "Equipo OBi"
+          },
+          "required": false
+        },
+        {
+          "key": "port",
+          "type": "select",
+          "label": {
+            "en": "Phone port",
+            "fr": "Port téléphone",
+            "de": "Telefonanschluss",
+            "es": "Puerto de teléfono"
+          },
+          "required": false,
+          "options": [
+            {
+              "value": "phone1",
+              "label": {
+                "en": "PHONE1",
+                "fr": "PHONE1",
+                "de": "PHONE1",
+                "es": "PHONE1"
+              }
+            },
+            {
+              "value": "phone2",
+              "label": {
+                "en": "PHONE2",
+                "fr": "PHONE2",
+                "de": "PHONE2",
+                "es": "PHONE2"
+              }
+            },
+            {
+              "value": "line",
+              "label": {
+                "en": "LINE (OBi110)",
+                "fr": "LINE (OBi110)",
+                "de": "LINE (OBi110)",
+                "es": "LINE (OBi110)"
+              }
+            }
+          ]
+        }
+      ],
+      "variables": [
+        {
+          "key": "device_name",
+          "type": "string",
+          "label": {
+            "en": "Box name",
+            "fr": "Nom du boîtier",
+            "de": "Name der Box",
+            "es": "Nombre del equipo"
+          }
+        },
+        {
+          "key": "port",
+          "type": "string",
+          "label": {
+            "en": "Phone port",
+            "fr": "Port téléphone",
+            "de": "Telefonanschluss",
+            "es": "Puerto de teléfono"
+          }
+        },
+        {
+          "key": "caller_number",
+          "type": "string",
+          "label": {
+            "en": "Caller number",
+            "fr": "Numéro de l'appelant",
+            "de": "Nummer des Anrufers",
+            "es": "Número de quien llama"
+          }
+        },
+        {
+          "key": "caller_name",
+          "type": "string",
+          "label": {
+            "en": "Caller name",
+            "fr": "Nom de l'appelant",
+            "de": "Name des Anrufers",
+            "es": "Nombre de quien llama"
+          }
+        }
+      ]
+    },
+    {
+      "key": "call_ended",
+      "label": {
+        "en": "Call ended",
+        "fr": "Appel terminé",
+        "de": "Anruf beendet",
+        "es": "Llamada terminada"
+      },
+      "description": {
+        "en": "A phone of the OBi box was hung up.",
+        "fr": "Un téléphone du boîtier OBi a été raccroché.",
+        "de": "Ein Telefon der OBi-Box wurde aufgelegt.",
+        "es": "Se ha colgado un teléfono del equipo OBi."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "OBi box",
+            "fr": "Boîtier OBi",
+            "de": "OBi-Box",
+            "es": "Equipo OBi"
+          },
+          "required": false
+        },
+        {
+          "key": "port",
+          "type": "select",
+          "label": {
+            "en": "Phone port",
+            "fr": "Port téléphone",
+            "de": "Telefonanschluss",
+            "es": "Puerto de teléfono"
+          },
+          "required": false,
+          "options": [
+            {
+              "value": "phone1",
+              "label": {
+                "en": "PHONE1",
+                "fr": "PHONE1",
+                "de": "PHONE1",
+                "es": "PHONE1"
+              }
+            },
+            {
+              "value": "phone2",
+              "label": {
+                "en": "PHONE2",
+                "fr": "PHONE2",
+                "de": "PHONE2",
+                "es": "PHONE2"
+              }
+            },
+            {
+              "value": "line",
+              "label": {
+                "en": "LINE (OBi110)",
+                "fr": "LINE (OBi110)",
+                "de": "LINE (OBi110)",
+                "es": "LINE (OBi110)"
+              }
+            }
+          ]
+        }
+      ],
+      "variables": [
+        {
+          "key": "device_name",
+          "type": "string",
+          "label": {
+            "en": "Box name",
+            "fr": "Nom du boîtier",
+            "de": "Name der Box",
+            "es": "Nombre del equipo"
+          }
+        },
+        {
+          "key": "port",
+          "type": "string",
+          "label": {
+            "en": "Phone port",
+            "fr": "Port téléphone",
+            "de": "Telefonanschluss",
+            "es": "Puerto de teléfono"
+          }
+        },
+        {
+          "key": "duration_seconds",
+          "type": "number",
+          "label": {
+            "en": "Duration (s)",
+            "fr": "Durée (s)",
+            "de": "Dauer (s)",
+            "es": "Duración (s)"
+          }
+        }
+      ]
+    },
+    {
+      "key": "registration_changed",
+      "label": {
+        "en": "SIP line status changed",
+        "fr": "État de ligne SIP changé",
+        "de": "SIP-Leitungsstatus geändert",
+        "es": "Estado de línea SIP cambiado"
+      },
+      "description": {
+        "en": "A voice service (SP1…SP4, OBiTALK) registered or lost its registration.",
+        "fr": "Un service voix (SP1…SP4, OBiTALK) s'est enregistré ou a perdu son enregistrement.",
+        "de": "Ein Sprachdienst (SP1…SP4, OBiTALK) hat sich registriert oder seine Registrierung verloren.",
+        "es": "Un servicio de voz (SP1…SP4, OBiTALK) se ha registrado o ha perdido su registro."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "OBi box",
+            "fr": "Boîtier OBi",
+            "de": "OBi-Box",
+            "es": "Equipo OBi"
+          },
+          "required": false
+        },
+        {
+          "key": "service",
+          "type": "select",
+          "label": {
+            "en": "Service",
+            "fr": "Service",
+            "de": "Dienst",
+            "es": "Servicio"
+          },
+          "required": false,
+          "options": [
+            {
+              "value": "sp1",
+              "label": {
+                "en": "SP1",
+                "fr": "SP1",
+                "de": "SP1",
+                "es": "SP1"
+              }
+            },
+            {
+              "value": "sp2",
+              "label": {
+                "en": "SP2",
+                "fr": "SP2",
+                "de": "SP2",
+                "es": "SP2"
+              }
+            },
+            {
+              "value": "sp3",
+              "label": {
+                "en": "SP3",
+                "fr": "SP3",
+                "de": "SP3",
+                "es": "SP3"
+              }
+            },
+            {
+              "value": "sp4",
+              "label": {
+                "en": "SP4",
+                "fr": "SP4",
+                "de": "SP4",
+                "es": "SP4"
+              }
+            },
+            {
+              "value": "obitalk",
+              "label": {
+                "en": "OBiTALK",
+                "fr": "OBiTALK",
+                "de": "OBiTALK",
+                "es": "OBiTALK"
+              }
+            }
+          ]
+        },
+        {
+          "key": "status",
+          "type": "select",
+          "label": {
+            "en": "New status",
+            "fr": "Nouvel état",
+            "de": "Neuer Status",
+            "es": "Nuevo estado"
+          },
+          "required": false,
+          "options": [
+            {
+              "value": "registered",
+              "label": {
+                "en": "Registered",
+                "fr": "Enregistré",
+                "de": "Registriert",
+                "es": "Registrado"
+              }
+            },
+            {
+              "value": "not_registered",
+              "label": {
+                "en": "Not registered",
+                "fr": "Non enregistré",
+                "de": "Nicht registriert",
+                "es": "No registrado"
+              }
+            }
+          ]
+        }
+      ],
+      "variables": [
+        {
+          "key": "device_name",
+          "type": "string",
+          "label": {
+            "en": "Box name",
+            "fr": "Nom du boîtier",
+            "de": "Name der Box",
+            "es": "Nombre del equipo"
+          }
+        },
+        {
+          "key": "service",
+          "type": "string",
+          "label": {
+            "en": "Service",
+            "fr": "Service",
+            "de": "Dienst",
+            "es": "Servicio"
+          }
+        },
+        {
+          "key": "status",
+          "type": "string",
+          "label": {
+            "en": "New status",
+            "fr": "Nouvel état",
+            "de": "Neuer Status",
+            "es": "Nuevo estado"
+          }
+        },
+        {
+          "key": "status_text",
+          "type": "string",
+          "label": {
+            "en": "Status reported by the box",
+            "fr": "État donné par le boîtier",
+            "de": "Von der Box gemeldeter Status",
+            "es": "Estado indicado por el equipo"
+          }
+        }
+      ]
+    },
+    {
+      "key": "box_connection_changed",
+      "label": {
+        "en": "Box online or offline",
+        "fr": "Boîtier en ligne ou non",
+        "de": "Box online oder offline",
+        "es": "Equipo en línea o no"
+      },
+      "description": {
+        "en": "The OBi box stopped answering on the network, or answers again.",
+        "fr": "Le boîtier OBi ne répond plus sur le réseau, ou répond de nouveau.",
+        "de": "Die OBi-Box antwortet nicht mehr im Netzwerk oder antwortet wieder.",
+        "es": "El equipo OBi ha dejado de responder en la red, o vuelve a responder."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "OBi box",
+            "fr": "Boîtier OBi",
+            "de": "OBi-Box",
+            "es": "Equipo OBi"
+          },
+          "required": false
+        },
+        {
+          "key": "status",
+          "type": "select",
+          "label": {
+            "en": "New status",
+            "fr": "Nouvel état",
+            "de": "Neuer Status",
+            "es": "Nuevo estado"
+          },
+          "required": false,
+          "options": [
+            {
+              "value": "online",
+              "label": {
+                "en": "Online",
+                "fr": "En ligne",
+                "de": "Online",
+                "es": "En línea"
+              }
+            },
+            {
+              "value": "offline",
+              "label": {
+                "en": "Offline",
+                "fr": "Hors ligne",
+                "de": "Offline",
+                "es": "Sin conexión"
+              }
+            }
+          ]
+        }
+      ],
+      "variables": [
+        {
+          "key": "device_name",
+          "type": "string",
+          "label": {
+            "en": "Box name",
+            "fr": "Nom du boîtier",
+            "de": "Name der Box",
+            "es": "Nombre del equipo"
+          }
+        },
+        {
+          "key": "host",
+          "type": "string",
+          "label": {
+            "en": "Address",
+            "fr": "Adresse",
+            "de": "Adresse",
+            "es": "Dirección"
+          }
+        },
+        {
+          "key": "status",
+          "type": "string",
+          "label": {
+            "en": "New status",
+            "fr": "Nouvel état",
+            "de": "Neuer Status",
+            "es": "Nuevo estado"
+          }
+        },
+        {
+          "key": "reason",
+          "type": "string",
+          "label": {
+            "en": "Reason",
+            "fr": "Raison",
+            "de": "Grund",
+            "es": "Motivo"
+          }
+        }
+      ]
+    }
+  ],
+  "scene_actions": [
+    {
+      "key": "reboot_box",
+      "label": {
+        "en": "Reboot an OBi box",
+        "fr": "Redémarrer un boîtier OBi",
+        "de": "Eine OBi-Box neu starten",
+        "es": "Reiniciar un equipo OBi"
+      },
+      "description": {
+        "en": "Needs the admin account. Calls in progress are cut.",
+        "fr": "Demande le compte admin. Les appels en cours sont coupés.",
+        "de": "Braucht das Admin-Konto. Laufende Anrufe werden getrennt.",
+        "es": "Necesita la cuenta admin. Las llamadas en curso se cortan."
+      },
+      "timeout_seconds": 15,
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "OBi box",
+            "fr": "Boîtier OBi",
+            "de": "OBi-Box",
+            "es": "Equipo OBi"
+          },
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "key": "rebooted",
+          "type": "boolean",
+          "label": {
+            "en": "Reboot started",
+            "fr": "Redémarrage lancé",
+            "de": "Neustart gestartet",
+            "es": "Reinicio iniciado"
+          }
+        },
+        {
+          "key": "message",
+          "type": "string",
+          "label": {
+            "en": "Message",
+            "fr": "Message",
+            "de": "Meldung",
+            "es": "Mensaje"
+          }
+        }
+      ]
+    },
+    {
+      "key": "get_box_status",
+      "label": {
+        "en": "Read an OBi box status",
+        "fr": "Lire l'état d'un boîtier OBi",
+        "de": "Status einer OBi-Box lesen",
+        "es": "Leer el estado de un equipo OBi"
+      },
+      "description": {
+        "en": "Is a SIP line registered, is a phone in use or ringing?",
+        "fr": "Une ligne SIP est-elle enregistrée, un téléphone est-il occupé ou sonne-t-il ?",
+        "de": "Ist eine SIP-Leitung registriert, wird telefoniert oder klingelt es?",
+        "es": "¿Está registrada una línea SIP, hay un teléfono en uso o sonando?"
+      },
+      "timeout_seconds": 15,
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "OBi box",
+            "fr": "Boîtier OBi",
+            "de": "OBi-Box",
+            "es": "Equipo OBi"
+          },
+          "required": true
+        },
+        {
+          "key": "service",
+          "type": "select",
+          "label": {
+            "en": "Service",
+            "fr": "Service",
+            "de": "Dienst",
+            "es": "Servicio"
+          },
+          "required": false,
+          "default": "sp1",
+          "options": [
+            {
+              "value": "sp1",
+              "label": {
+                "en": "SP1",
+                "fr": "SP1",
+                "de": "SP1",
+                "es": "SP1"
+              }
+            },
+            {
+              "value": "sp2",
+              "label": {
+                "en": "SP2",
+                "fr": "SP2",
+                "de": "SP2",
+                "es": "SP2"
+              }
+            },
+            {
+              "value": "sp3",
+              "label": {
+                "en": "SP3",
+                "fr": "SP3",
+                "de": "SP3",
+                "es": "SP3"
+              }
+            },
+            {
+              "value": "sp4",
+              "label": {
+                "en": "SP4",
+                "fr": "SP4",
+                "de": "SP4",
+                "es": "SP4"
+              }
+            },
+            {
+              "value": "obitalk",
+              "label": {
+                "en": "OBiTALK",
+                "fr": "OBiTALK",
+                "de": "OBiTALK",
+                "es": "OBiTALK"
+              }
+            }
+          ]
+        }
+      ],
+      "outputs": [
+        {
+          "key": "reachable",
+          "type": "boolean",
+          "label": {
+            "en": "Box reachable",
+            "fr": "Boîtier joignable",
+            "de": "Box erreichbar",
+            "es": "Equipo accesible"
+          }
+        },
+        {
+          "key": "registered",
+          "type": "boolean",
+          "label": {
+            "en": "Line registered",
+            "fr": "Ligne enregistrée",
+            "de": "Leitung registriert",
+            "es": "Línea registrada"
+          }
+        },
+        {
+          "key": "status",
+          "type": "string",
+          "label": {
+            "en": "Line status",
+            "fr": "État de la ligne",
+            "de": "Leitungsstatus",
+            "es": "Estado de la línea"
+          }
+        },
+        {
+          "key": "in_call",
+          "type": "boolean",
+          "label": {
+            "en": "Phone in use",
+            "fr": "Téléphone occupé",
+            "de": "Telefon in Benutzung",
+            "es": "Teléfono en uso"
+          }
+        },
+        {
+          "key": "ringing",
+          "type": "boolean",
+          "label": {
+            "en": "Phone ringing",
+            "fr": "Téléphone qui sonne",
+            "de": "Telefon klingelt",
+            "es": "Teléfono sonando"
+          }
+        }
+      ]
+    }
+  ]
+}
